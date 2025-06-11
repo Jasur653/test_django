@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Profile" %} | WMS{% endblock %}
+
+{% block header_title %}{% trans "User Profile" %}{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
+    <!-- User Information -->
+    <div class="bg-gray-900 rounded-lg shadow-lg p-6 border border-gray-800">
+        <div class="flex flex-col items-center mb-6">
+            {% if user.profile.profile_image %}
+            <img src="{{ user.profile.profile_image.url }}" alt="{{ user.username }}" class="h-24 w-24 rounded-full object-cover mb-4">
+            {% else %}
+            <div class="h-24 w-24 rounded-full bg-primary-500 flex items-center justify-center mb-4">
+                <span class="text-2xl font-bold text-white">{{ user.username|slice:":1"|upper }}</span>
+            </div>
+            {% endif %}
+            <h2 class="text-xl font-bold">{{ user.get_full_name|default:user.username }}</h2>
+            <p class="text-gray-400">{{ user.email }}</p>
+            {% if user.profile.position %}
+            <p class="text-gray-400">{{ user.profile.position }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="space-y-4">
+            <div>
+                <h3 class="text-sm font-medium text-gray-400 mb-1">{% trans "Username" %}</h3>
+                <p>{{ user.username }}</p>
+            </div>
+            
+            <div>
+                <h3 class="text-sm font-medium text-gray-400 mb-1">{% trans "Full Name" %}</h3>
+                <p>{{ user.get_full_name|default:"-" }}</p>
+            </div>
+            
+            <div>
+                <h3 class="text-sm font-medium text-gray-400 mb-1">{% trans "Email" %}</h3>
+                <p>{{ user.email|default:"-" }}</p>
+            </div>
+            
+            {% if user.profile.phone %}
+            <div>
+                <h3 class="text-sm font-medium text-gray-400 mb-1">{% trans "Phone" %}</h3>
+                <p>{{ user.profile.phone }}</p>
+            </div>
+            {% endif %}
+            
+            {% if user.profile.address %}
+            <div>
+                <h3 class="text-sm font-medium text-gray-400 mb-1">{% trans "Address" %}</h3>
+                <p>{{ user.profile.address }}</p>
+            </div>
+            {% endif %}
+            
+            <div>
+                <h3 class="text-sm font-medium text-gray-400 mb-1">{% trans "Last Login" %}</h3>
+                <p>{{ user.last_login|date:"F d, Y H:i" }}</p>
+            </div>
+        </div>
+        
+        <div class="mt-6">
+            <a href="{% url 'change_password' %}" class="w-full px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors block text-center">
+                {% trans "Change Password" %}
+            </a>
+        </div>
+    </div>
+    
+    <!-- Edit Profile -->
+    <div class="bg-gray-900 rounded-lg shadow-lg p-6 border border-gray-800 md:col-span-2">
+        <h3 class="text-lg font-semibold mb-4">{% trans "Edit Profile" %}</h3>
+        
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="bg-red-900 text-red-100 p-3 rounded-md">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- First Name -->
+                <div>
+                    <label for="{{ user_form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+                        {% trans "First Name" %}
+                    </label>
+                    {{ user_form.first_name }}
+                    {% if user_form.first_name.errors %}
+                    <div class="text-red-400 text-sm mt-1">
+                        {% for error in user_form.first_name.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Last Name -->
+                <div>
+                    <label for="{{ user_form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+                        {% trans "Last Name" %}
+                    </label>
+                    {{ user_form.last_name }}
+                    {% if user_form.last_name.errors %}
+                    <div class="text-red-400 text-sm mt-1">
+                        {% for error in user_form.last_name.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Email -->
+                <div>
+                    <label for="{{ user_form.email.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+                        {% trans "Email" %}
+                    </label>
+                    {{ user_form.email }}
+                    {% if user_form.email.errors %}
+                    <div class="text-red-400 text-sm mt-1">
+                        {% for error in user_form.email.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Position -->
+                <div>
+                    <label for="{{ profile_form.position.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+                        {% trans "Position" %}
+                    </label>
+                    {{ profile_form.position }}
+                    {% if profile_form.position.errors %}
+                    <div class="text-red-400 text-sm mt-1">
+                        {% for error in profile_form.position.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Phone -->
+                <div>
+                    <label for="{{ profile_form.phone.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+                        {% trans "Phone" %}
+                    </label>
+                    {{ profile_form.phone }}
+                    {% if profile_form.phone.errors %}
+                    <div class="text-red-400 text-sm mt-1">
+                        {% for error in profile_form.phone.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Profile Image -->
+                <div>
+                    <label for="{{ profile_form.profile_image.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+                        {% trans "Profile Image" %}
+                    </label>
+                    {{ profile_form.profile_image }}
+                    {% if profile_form.profile_image.errors %}
+                    <div class="text-red-400 text-sm mt-1">
+                        {% for error in profile_form.profile_image.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Address -->
+                <div class="md:col-span-2">
+                    <label for="{{ profile_form.address.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+                        {% trans "Address" %}
+                    </label>
+                    {{ profile_form.address }}
+                    {% if profile_form.address.errors %}
+                    <div class="text-red-400 text-sm mt-1">
+                        {% for error in profile_form.address.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="flex justify-end pt-4 border-t border-gray-800">
+                <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors">
+                    {% trans "Update Profile" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

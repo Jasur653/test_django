@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ title }} | WMS{% endblock %}
+
+{% block header_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex items-center">
+    <a href="{% url 'category_list' %}" class="text-primary-400 hover:text-primary-300 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+        {% trans "Back to Categories" %}
+    </a>
+</div>
+
+<div class="bg-gray-900 rounded-lg shadow-lg p-6 border border-gray-800 animate-fade-in">
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+        <div class="bg-red-900 text-red-100 p-3 rounded-md">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Category Name -->
+        <div>
+            <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+                {% trans "Category Name" %} <span class="text-red-400">*</span>
+            </label>
+            {{ form.name }}
+            {% if form.name.errors %}
+            <div class="text-red-400 text-sm mt-1">
+                {% for error in form.name.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Description -->
+        <div>
+            <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+                {% trans "Description" %}
+            </label>
+            {{ form.description }}
+            {% if form.description.errors %}
+            <div class="text-red-400 text-sm mt-1">
+                {% for error in form.description.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="flex justify-end space-x-3 pt-4 border-t border-gray-800">
+            <a href="{% url 'category_list' %}" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors">
+                {% trans "Cancel" %}
+            </a>
+            <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors">
+                {% if category %}{% trans "Update Category" %}{% else %}{% trans "Create Category" %}{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
