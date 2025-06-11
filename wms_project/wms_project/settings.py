@@ -3,11 +3,11 @@ from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-allowed_hosts = ['test-django-saqz.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['test-django-saqz.onrender.com', 'localhost', '127.0.0.1']
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-csrf_trusted_origins = ['https://test-django-saqz.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://test-django-saqz.onrender.com']
 SECRET_KEY = 'django-insecure-your-secret-key-here'
 CSRF_TRUSTED_ORIGINS = ['https://test-django-1-294y.onrender.com']
 
